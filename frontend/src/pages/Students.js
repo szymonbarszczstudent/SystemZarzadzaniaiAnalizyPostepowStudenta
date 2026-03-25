@@ -16,7 +16,6 @@ function Students() {
             <table className="custom-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Imię</th>
                     <th>Nazwisko</th>
                     <th>Kierunek</th>
@@ -28,7 +27,6 @@ function Students() {
                 <tbody>
                 {students.map(s => (
                     <tr key={s.id}>
-                        <td>{s.id}</td>
                         <td>{s.firstName}</td>
                         <td>{s.lastName}</td>
                         <td>{s.programName}</td>

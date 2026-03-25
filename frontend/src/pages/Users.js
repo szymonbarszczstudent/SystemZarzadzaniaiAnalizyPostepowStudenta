@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "../styles/table.css";
 
 function Users() {
     const [users, setUsers] = useState([]);
@@ -10,15 +11,30 @@ function Users() {
     }, []);
 
     return (
-        <div>
-            <h1>Users</h1>
+        <div className="table-container">
+            <h1 className="table-title">Użytkownicy</h1>
 
-            {users.map(u => (
-                <div key={u.id}>
-                    {u.email}
-                </div>
-            ))}
+            <table className="custom-table">
+                <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Rola</th>
+                    <th>Utworzono</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {users.map(u => (
+                    <tr key={u.id}>
+                        <td>{u.email}</td>
+                        <td>{u.role}</td>
+                        <td>{u.createdAt}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 }
+
 export default Users;

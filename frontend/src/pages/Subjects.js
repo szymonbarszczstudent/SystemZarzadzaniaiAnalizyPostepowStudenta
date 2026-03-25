@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "../styles/table.css";
 
 function Subjects() {
     const [subjects, setSubjects] = useState([]);
@@ -10,15 +11,32 @@ function Subjects() {
     }, []);
 
     return (
-        <div>
-            <h1>Subjects</h1>
+        <div className="table-container">
+            <h1 className="table-title">Przedmioty</h1>
 
-            {subjects.map(s => (
-                <div key={s.id}>
-                    {s.name}
-                </div>
-            ))}
+            <table className="custom-table">
+                <thead>
+                <tr>
+                    <th>Kod</th>
+                    <th>Nazwa</th>
+                    <th>ECTS</th>
+                    <th>Opis</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {subjects.map(s => (
+                    <tr key={s.subjectId || s.id}>
+                        <td>{s.code}</td>
+                        <td>{s.name}</td>
+                        <td>{s.ects}</td>
+                        <td>{s.description}</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 }
+
 export default Subjects;

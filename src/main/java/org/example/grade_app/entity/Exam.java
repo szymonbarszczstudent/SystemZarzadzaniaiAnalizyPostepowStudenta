@@ -36,7 +36,7 @@ public class Exam {
     private Byte attemptNumber;
 
     @Column(name = "exam_date")
-    private LocalDate examDate;
+    private String examDate;
 
     @ColumnDefault("'FAILED'")
     @Lob

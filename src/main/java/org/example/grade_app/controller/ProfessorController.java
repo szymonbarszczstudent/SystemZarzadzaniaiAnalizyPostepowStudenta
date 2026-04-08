@@ -1,7 +1,7 @@
 package org.example.grade_app.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.grade_app.entity.Professor;
+import org.example.grade_app.dto.ProfessorDto;
 import org.example.grade_app.service.ProfessorService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +15,12 @@ public class ProfessorController {
     private final ProfessorService professorService;
 
     @GetMapping
-    public List<Professor> getAllProfessors() {
+    public List<ProfessorDto> getAllProfessors() {
         return professorService.getAllProfessors();
     }
 
     @GetMapping("/{id}")
-    public Professor getProfessorById(@PathVariable Integer id) {
+    public ProfessorDto getProfessorById(@PathVariable Integer id) {
         return professorService.getProfessorById(id);
     }
 }

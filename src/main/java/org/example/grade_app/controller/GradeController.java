@@ -1,12 +1,11 @@
 package org.example.grade_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.grade_app.dto.CreateGradeRequest;
+import org.example.grade_app.dto.GradeDto;
 import org.example.grade_app.entity.Grade;
 import org.example.grade_app.service.GradeService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,13 +18,18 @@ public class GradeController {
 
 
     @GetMapping
-    public List<Grade> getAllGrades() {
+    public List<GradeDto> getAllGrades() {
         return GradeService.getAllGrades();
     }
 
     @GetMapping("/{id}")
-    public Grade getGradeById(@PathVariable Integer id) {
+    public GradeDto getGradeById(@PathVariable Integer id) {
         return GradeService.getGradeById(id);
+    }
+
+    @PostMapping
+    public GradeDto createGrade(@RequestBody CreateGradeRequest request) {
+        return GradeService.createGrade(request);
     }
 }
 

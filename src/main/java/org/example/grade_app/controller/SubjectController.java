@@ -1,6 +1,7 @@
 package org.example.grade_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.grade_app.dto.SubjectDto;
 import org.example.grade_app.entity.Subject;
 import org.example.grade_app.service.SubjectService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,12 @@ public class SubjectController {
     private final SubjectService SubjectService;
 
     @GetMapping
-    public List<Subject> getAllSubjects() {
+    public List<SubjectDto> getAllSubjects() {
         return SubjectService.getAllSubjects();
     }
 
     @GetMapping("/{id}")
-    public Subject getSubjectById(@PathVariable Integer id) {
+    public SubjectDto getSubjectById(@PathVariable Integer id) {
         return SubjectService.getSubjectById(id);
     }
 }

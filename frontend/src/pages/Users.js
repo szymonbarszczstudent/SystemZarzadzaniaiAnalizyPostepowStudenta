@@ -25,7 +25,7 @@ function Users() {
 
                 <tbody>
                 {users.map(u => (
-                    <tr key={u.id}>
+                    <tr key={u.email}>
                         <td>{u.email}</td>
                         <td>{u.role}</td>
                         <td>{u.createdAt}</td>

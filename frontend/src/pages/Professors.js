@@ -33,7 +33,7 @@ function Professors() {
 
                 <tbody>
                 {professors.map(p => (
-                    <tr key={p.id}>
+                    <tr key={`${p.firstName}-${p.lastName}-${p.title}`}>
                         <td>{p.title}</td>
                         <td>{p.firstName}</td>
                         <td>{p.lastName}</td>

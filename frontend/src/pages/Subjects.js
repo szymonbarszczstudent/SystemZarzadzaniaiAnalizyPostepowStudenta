@@ -26,7 +26,7 @@ function Subjects() {
 
                 <tbody>
                 {subjects.map(s => (
-                    <tr key={s.subjectId || s.id}>
+                    <tr key={s.code}>
                         <td>{s.code}</td>
                         <td>{s.name}</td>
                         <td>{s.ects}</td>

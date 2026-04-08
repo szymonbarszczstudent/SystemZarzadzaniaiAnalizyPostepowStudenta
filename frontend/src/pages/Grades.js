@@ -37,7 +37,7 @@ function Grades() {
 
                 <tbody>
                 {grades.map(g => (
-                    <tr key={g.gradeId || g.id}>
+                    <tr key={`${e.examDate}-${e.attemptNumber}-${e.studentName}`}>
                         <td>{g.enrollmentId || g.enrollment?.enrollmentId}</td>
                         <td>{g.professorId || g.professor?.id}</td>
                         <td>{g.category}</td>

@@ -1,9 +1,12 @@
 package org.example.grade_app.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.grade_app.dto.DtoMapper;
+import org.example.grade_app.dto.SubjectDto;
 import org.example.grade_app.entity.Subject;
 import org.example.grade_app.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,11 +15,27 @@ import java.util.List;
 public class SubjectService {
 
     private final SubjectRepository SubjectRepository;
-    public List<Subject> getAllSubjects() {
+
+    @Transactional(readOnly = true)
+    public List<SubjectDto> getAllSubjects() {
+        return SubjectRepository.findAll()
+                .stream()
+                .map(DtoMapper::toSubjectDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public SubjectDto getSubjectById(Integer id) {
+        return SubjectRepository.findById(id)
+                .map(DtoMapper::toSubjectDto)
+                .orElseThrow(() -> new RuntimeException("Subject not found"));
+    }
+
+    public List<Subject> getAllSubjectsAdmin() {
         return SubjectRepository.findAll();
     }
 
-    public Subject getSubjectById(Integer id) {
+    public Subject getSubjectByIdAdmin(Integer id) {
         return SubjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
     }

@@ -26,7 +26,7 @@ function Students() {
 
                 <tbody>
                 {students.map(s => (
-                    <tr key={s.id}>
+                    <tr key={s.studentNumber}>
                         <td>{s.firstName}</td>
                         <td>{s.lastName}</td>
                         <td>{s.programName}</td>

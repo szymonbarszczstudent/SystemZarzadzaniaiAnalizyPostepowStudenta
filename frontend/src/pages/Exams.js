@@ -38,7 +38,7 @@ function Exams() {
 
                 <tbody>
                 {exams.map(e => (
-                    <tr key={e.examId || e.id}>
+                    <tr key={`${e.examDate}-${e.attemptNumber}-${e.studentName}`}>
                         <td>{e.enrollmentId}</td>
                         <td>{e.professorId}</td>
                         <td>{e.attemptNumber}</td>

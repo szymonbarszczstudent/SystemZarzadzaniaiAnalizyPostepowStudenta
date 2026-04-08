@@ -1,7 +1,9 @@
 package org.example.grade_app.controller;
 
+import org.example.grade_app.dto.UserDto;
 import org.example.grade_app.entity.User;
 import org.example.grade_app.repository.UserRepository;
+import org.example.grade_app.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,21 +14,23 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     // GET ALL
     @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     // GET BY ID
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userRepository.findById(id).orElse(null);
+    public UserDto getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
 
     // CREATE

@@ -1,12 +1,11 @@
 package org.example.grade_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.grade_app.dto.CreateExamRequest;
+import org.example.grade_app.dto.ExamDto;
 import org.example.grade_app.entity.Exam;
 import org.example.grade_app.service.ExamService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,13 +17,18 @@ public class ExamController {
     private final ExamService ExamService;
 
     @GetMapping
-    public List<Exam> getAllExams() {
+    public List<ExamDto> getAllExams() {
         return ExamService.getAllExams();
     }
 
     @GetMapping("/{id}")
-    public Exam getExamById(@PathVariable Integer id) {
+    public ExamDto getExamById(@PathVariable Integer id) {
         return ExamService.getExamById(id);
+    }
+
+    @PostMapping
+    public ExamDto createExam(@RequestBody CreateExamRequest request) {
+        return ExamService.createExam(request);
     }
 }
 

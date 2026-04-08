@@ -1,6 +1,7 @@
 package org.example.grade_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.grade_app.dto.StudentDto;
 import org.example.grade_app.entity.Student;
 import org.example.grade_app.service.StudentService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,12 @@ import java.util.List;
         private final StudentService studentService;
 
         @GetMapping
-        public List<Student> getAllStudents() {
+        public List<StudentDto> getAllStudents() {
             return studentService.getAllStudents();
         }
 
         @GetMapping("/{id}")
-        public Student getStudentById(@PathVariable Integer id) {
+        public StudentDto getStudentById(@PathVariable Integer id) {
             return studentService.getStudentById(id);
         }
     }

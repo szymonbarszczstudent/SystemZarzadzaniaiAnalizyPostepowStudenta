@@ -27,7 +27,6 @@ function Exams() {
             <table className="custom-table">
                 <thead>
                 <tr>
-                    <th>Enrollment</th>
                     <th>Profesor</th>
                     <th>Podejście</th>
                     <th>Data</th>
@@ -39,8 +38,7 @@ function Exams() {
                 <tbody>
                 {exams.map(e => (
                     <tr key={`${e.examDate}-${e.attemptNumber}-${e.studentName}`}>
-                        <td>{e.enrollmentId}</td>
-                        <td>{e.professorId}</td>
+                        <td>{e.professorLastName}</td>
                         <td>{e.attemptNumber}</td>
                         <td>{e.examDate}</td>
                         <td>{e.status}</td>

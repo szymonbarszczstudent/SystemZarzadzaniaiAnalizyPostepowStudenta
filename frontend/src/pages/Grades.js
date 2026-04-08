@@ -25,7 +25,6 @@ function Grades() {
             <table className="custom-table">
                 <thead>
                 <tr>
-                    <th>Enrollment</th>
                     <th>Profesor</th>
                     <th>Kategoria</th>
                     <th>Ocena</th>
@@ -37,9 +36,8 @@ function Grades() {
 
                 <tbody>
                 {grades.map(g => (
-                    <tr key={`${e.examDate}-${e.attemptNumber}-${e.studentName}`}>
-                        <td>{g.enrollmentId || g.enrollment?.enrollmentId}</td>
-                        <td>{g.professorId || g.professor?.id}</td>
+                    <tr key={`${g.studentNumber}-${g.subjectCode}-${g.gradedAt}`}>
+                        <td>{g.professorLastName}</td>
                         <td>{g.category}</td>
                         <td>{g.gradeValue}</td>
                         <td>{g.weight}</td>

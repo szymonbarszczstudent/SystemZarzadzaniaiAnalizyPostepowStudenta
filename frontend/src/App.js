@@ -7,6 +7,8 @@ import Subjects from "./pages/Subjects";
 import Exams from "./pages/Exams";
 import Grades from "./pages/Grades";
 import Users from "./pages/Users";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
     return (
@@ -14,6 +16,8 @@ function App() {
             <Navbar />
 
             <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/students" element={<Students />} />
                 <Route path="/professors" element={<Professors />} />
                 <Route path="/subjects" element={<Subjects />} />

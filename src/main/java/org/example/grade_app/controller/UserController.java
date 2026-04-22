@@ -1,5 +1,6 @@
 package org.example.grade_app.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.UserDto;
 import org.example.grade_app.entity.User;
 import org.example.grade_app.repository.UserRepository;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserRepository userRepository;

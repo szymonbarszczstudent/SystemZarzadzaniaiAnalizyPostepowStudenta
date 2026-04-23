@@ -6,11 +6,13 @@ export async function register(email, password) {
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) {
-        throw new Error("Register failed");
+        const text = await res.text();
+        throw new Error(text || "Register failed");
     }
 }
 
@@ -20,12 +22,36 @@ export async function login(email, password) {
         headers: {
             "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
     });
-
     if (!res.ok) {
         throw new Error("Login failed");
     }
 
-    return await res.text();
+    return await res.json();
+}
+
+    export async function getCurrentUser() {
+        const res = await fetch(`${API_URL}/me`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Auth check failed");
+        }
+
+        return await res.json();
+    }
+
+    export async function logout() {
+        const res = await fetch(`${API_URL}/logout`, {
+            method: "POST",
+            credentials: "include",
+        });
+
+        if (!res.ok) {
+            throw new Error("Logout failed");
+        }
 }

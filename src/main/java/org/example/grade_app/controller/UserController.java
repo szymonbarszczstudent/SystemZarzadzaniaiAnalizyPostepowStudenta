@@ -33,14 +33,7 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    // CREATE
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-
     // DELETE
-    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Integer id) {
         userRepository.deleteById(id);
     }

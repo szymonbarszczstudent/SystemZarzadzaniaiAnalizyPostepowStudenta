@@ -5,7 +5,9 @@ function Professors() {
     const [professors, setProfessors] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/professors")
+        fetch("http://localhost:8080/api/professors", {
+            credentials: "include"
+        })
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {

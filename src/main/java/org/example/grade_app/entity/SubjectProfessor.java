@@ -11,7 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "subject_professors", schema = "grades_app")
+@Table(name = "subject_professors")
 public class SubjectProfessor {
     @EmbeddedId
     private SubjectProfessorId id;

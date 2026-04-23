@@ -5,7 +5,9 @@ function Grades() {
     const [grades, setGrades] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/grades")
+        fetch("http://localhost:8080/api/grades", {
+            credentials: "include"
+        })
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {

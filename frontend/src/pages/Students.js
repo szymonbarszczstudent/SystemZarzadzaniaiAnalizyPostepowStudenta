@@ -4,7 +4,9 @@ function Students() {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/students")
+        fetch("http://localhost:8080/api/students", {
+            credentials: "include"
+        })
             .then(res => res.json())
             .then(data => setStudents(data));
     }, []);

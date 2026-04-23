@@ -5,5 +5,5 @@ import java.time.Instant;
 public record UserDto(
         String email,
         String role,
-        Instant createdAt
+        String createdAt
 ) {}

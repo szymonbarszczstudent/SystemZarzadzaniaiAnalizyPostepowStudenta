@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "grades", schema = "grades_app")
+@Table(name = "grades")
 public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

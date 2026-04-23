@@ -5,7 +5,9 @@ function Subjects() {
     const [subjects, setSubjects] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/subjects")
+        fetch("http://localhost:8080/api/subjects", {
+            credentials: "include"
+        })
             .then(res => res.json())
             .then(data => setSubjects(data));
     }, []);

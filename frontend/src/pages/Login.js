@@ -10,9 +10,9 @@ export default function Login() {
 
     const handleLogin = async () => {
         try {
-            const token = await login(email, password);
-            localStorage.setItem("token", token);
+            await login(email, password);
             alert("Zalogowano!");
+            navigate("/");
         } catch {
             alert("Błąd logowania");
         }
@@ -26,12 +26,14 @@ export default function Login() {
                 <input
                     type="email"
                     placeholder="Email"
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
                 <input
                     type="password"
                     placeholder="Hasło"
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
 

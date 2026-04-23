@@ -14,7 +14,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "users", schema = "grades_app")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
+    private String createdAt;
+
 }

@@ -5,7 +5,9 @@ function Exams() {
     const [exams, setExams] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/exams")
+        fetch("http://localhost:8080/api/exams", {
+            credentials: "include"
+        })
             .then(res => res.json())
             .then(data => {
                 console.log(data);

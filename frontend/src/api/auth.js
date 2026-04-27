@@ -1,13 +1,13 @@
 const API_URL = "http://localhost:8080/auth";
 
-export async function register(email, password) {
+export async function register(email, password, confirm_password) {
     const res = await fetch(`${API_URL}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, confirm_password  }),
     });
 
     if (!res.ok) {

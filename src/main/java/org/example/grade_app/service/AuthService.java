@@ -33,6 +33,9 @@ public class AuthService {
         if (request.password() == null || request.password().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
         }
+        if (!request.password().equals(request.confirm_password())) {
+            throw new RuntimeException("Passwords don't match.");
+        }
 
         if (userRepository.existsByEmail(request.email())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");

@@ -6,11 +6,12 @@ import { useNavigate } from "react-router-dom";
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirm_password, setConfirm_password] = useState("");
     const navigate = useNavigate();
 
     const handleRegister = async () => {
-        try {
-            await register(email, password);
+            try {
+            await register(email, password, confirm_password);
             alert("Zarejestrowano!");
             navigate("/login");
         } catch {
@@ -33,6 +34,12 @@ export default function Register() {
                     type="password"
                     placeholder="Hasło"
                     onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <input
+                    type="password"
+                    placeholder="Potwierdź hasło"
+                    onChange={(e) => setConfirm_password(e.target.value)}
                 />
 
                 <button onClick={handleRegister}>Zarejestruj</button>

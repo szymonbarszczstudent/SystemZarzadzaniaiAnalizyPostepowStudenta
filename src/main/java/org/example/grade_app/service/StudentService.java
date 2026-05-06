@@ -37,4 +37,10 @@ public class StudentService {
         return StudentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
+    @Transactional(readOnly = true)
+    public StudentDto getStudentByUserId(Integer userId) {
+        return StudentRepository.findByUsers_Id(userId)
+                .map(DtoMapper::toStudentDto)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
 }

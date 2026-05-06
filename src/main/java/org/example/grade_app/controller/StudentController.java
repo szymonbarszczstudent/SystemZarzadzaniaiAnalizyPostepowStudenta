@@ -1,5 +1,6 @@
 package org.example.grade_app.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.StudentDto;
 import org.example.grade_app.entity.Student;
@@ -26,5 +27,17 @@ import java.util.List;
         @GetMapping("/{id}")
         public StudentDto getStudentById(@PathVariable Integer id) {
             return studentService.getStudentById(id);
+        }
+
+
+        @GetMapping("/me")
+        public StudentDto getCurrentStudent(HttpSession session) {
+            Integer userId = (Integer) session.getAttribute("userId");
+
+            if (userId == null) {
+                throw new RuntimeException("Not logged in");
+            }
+
+            return studentService.getStudentByUserId(userId);
         }
     }

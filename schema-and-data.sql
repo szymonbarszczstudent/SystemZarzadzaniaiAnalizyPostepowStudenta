@@ -142,7 +142,8 @@ INSERT INTO users (user_id, email, password_hash, role, created_at) VALUES
 (1, 'student1@example.com', '$samplehash1', 'STUDENT', '2026-03-12 12:21:39'),
 (2, 'student2@example.com', '$samplehash2', 'STUDENT', '2026-03-12 12:21:39'),
 (3, 'prof1@example.com', '$samplehash3', 'PROFESSOR', '2026-03-12 12:21:39'),
-(4, 'prof2@example.com', '$samplehash4', 'PROFESSOR', '2026-03-12 12:21:39');
+(4, 'prof2@example.com', '$samplehash4', 'PROFESSOR', '2026-03-12 12:21:39'),
+(5, 'admin@example.com', '$argon2id$v=19$m=16384,t=2,p=1$o1a2y7yBGd7ZiGmgOWJfbA$JMwcIedx2PDC4ySNjFNXXEoLpLKVI3eQxrKUPaSzfFw', 'ADMIN', CURRENT_TIMESTAMP);
 
 INSERT INTO students (student_id, student_number, first_name, last_name, study_year, program_name) VALUES
 (1, 'S10001', 'Jan', 'Kowalski', 2, 'Informatyka'),

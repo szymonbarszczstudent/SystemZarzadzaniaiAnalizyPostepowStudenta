@@ -4,28 +4,36 @@ import jakarta.servlet.http.HttpSession;
 import org.example.grade_app.dto.AuthUserResponse;
 import org.example.grade_app.dto.LoginRequest;
 import org.example.grade_app.dto.RegisterRequest;
+import org.example.grade_app.entity.Student;
 import org.example.grade_app.entity.User;
+import org.example.grade_app.repository.StudentRepository;
 import org.example.grade_app.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(
             UserRepository userRepository,
+            StudentRepository studentRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void register(RegisterRequest request) {
+
         if (request.email() == null || request.email().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
@@ -33,8 +41,9 @@ public class AuthService {
         if (request.password() == null || request.password().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is required");
         }
+
         if (!request.password().equals(request.confirm_password())) {
-            throw new RuntimeException("Passwords don't match.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords don't match.");
         }
 
         if (userRepository.existsByEmail(request.email())) {
@@ -46,7 +55,19 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         user.setRole("STUDENT");
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        Student student = new Student();
+        student.setUsers(savedUser);
+
+        student.setStudentNumber("S" + String.format("%05d", savedUser.getId()));
+
+        student.setFirstName("Nowy");
+        student.setLastName("Student");
+        student.setStudyYear((byte) 1);
+        student.setProgramName("Informatyka");
+
+        studentRepository.save(student);
     }
 
     public AuthUserResponse login(LoginRequest request, HttpSession session) {
@@ -92,5 +113,8 @@ public class AuthService {
 
     public void logout(HttpSession session) {
         session.invalidate();
+    }
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }

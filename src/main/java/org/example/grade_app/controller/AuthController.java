@@ -39,4 +39,8 @@ public class AuthController {
     public void logout(HttpSession session) {
         authService.logout(session);
     }
+    @GetMapping("/hash/{password}")
+    public String hashPassword(@PathVariable String password) {
+        return authService.hashPassword(password);
+    }
 }

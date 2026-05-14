@@ -66,4 +66,12 @@ public class GradeService {
         return GradeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Grade not found"));
     }
+
+    @Transactional(readOnly = true)
+    public List<GradeDto> getGradesForStudentUserId(Integer userId) {
+        return GradeRepository.findByEnrollment_Student_Users_Id(userId)
+                .stream()
+                .map(DtoMapper::toGradeDto)
+                .toList();
+    }
 }

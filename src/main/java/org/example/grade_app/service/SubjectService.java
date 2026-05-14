@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.DtoMapper;
 import org.example.grade_app.dto.SubjectDto;
 import org.example.grade_app.entity.Subject;
+import org.example.grade_app.repository.EnrollmentRepository;
 import org.example.grade_app.repository.SubjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -15,11 +17,23 @@ import java.util.List;
 public class SubjectService {
 
     private final SubjectRepository SubjectRepository;
+    private final EnrollmentRepository EnrollmentRepository;
 
     @Transactional(readOnly = true)
     public List<SubjectDto> getAllSubjects() {
         return SubjectRepository.findAll()
                 .stream()
+                .map(DtoMapper::toSubjectDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubjectDto> getSubjectsForStudentUserId(Integer userId) {
+        return EnrollmentRepository.findByStudent_Users_Id(userId)
+                .stream()
+                .map(enrollment -> enrollment.getSubject())
+                .distinct()
+                .sorted(Comparator.comparing(Subject::getName))
                 .map(DtoMapper::toSubjectDto)
                 .toList();
     }

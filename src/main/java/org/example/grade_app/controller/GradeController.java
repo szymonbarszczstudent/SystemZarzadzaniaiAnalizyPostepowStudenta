@@ -1,5 +1,6 @@
 package org.example.grade_app.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.CreateGradeRequest;
 import org.example.grade_app.dto.GradeDto;
@@ -16,9 +17,15 @@ public class GradeController {
 
     private final GradeService GradeService;
 
-
     @GetMapping
-    public List<GradeDto> getAllGrades() {
+    public List<GradeDto> getAllGrades(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
+        if ("STUDENT".equals(role)) {
+            return GradeService.getGradesForStudentUserId(userId);
+        }
+
         return GradeService.getAllGrades();
     }
 

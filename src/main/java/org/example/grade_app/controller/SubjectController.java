@@ -1,5 +1,6 @@
 package org.example.grade_app.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.SubjectDto;
 import org.example.grade_app.entity.Subject;
@@ -19,7 +20,14 @@ public class SubjectController {
     private final SubjectService SubjectService;
 
     @GetMapping
-    public List<SubjectDto> getAllSubjects() {
+    public List<SubjectDto> getAllSubjects(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
+        if ("STUDENT".equals(role)) {
+            return SubjectService.getSubjectsForStudentUserId(userId);
+        }
+
         return SubjectService.getAllSubjects();
     }
 

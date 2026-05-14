@@ -1,5 +1,6 @@
 package org.example.grade_app.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.CreateExamRequest;
 import org.example.grade_app.dto.ExamDto;
@@ -17,7 +18,14 @@ public class ExamController {
     private final ExamService ExamService;
 
     @GetMapping
-    public List<ExamDto> getAllExams() {
+    public List<ExamDto> getAllExams(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
+        if ("STUDENT".equals(role)) {
+            return ExamService.getExamsForStudentUserId(userId);
+        }
+
         return ExamService.getAllExams();
     }
 

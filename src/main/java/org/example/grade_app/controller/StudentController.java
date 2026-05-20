@@ -22,8 +22,23 @@ import java.util.List;
         private final StudentService studentService;
 
         @GetMapping
-        public List<StudentDto> getAllStudents() {
-            return studentService.getAllStudents();
+        public List<StudentDto> getAllStudents(HttpSession session) {
+            Integer userId = (Integer) session.getAttribute("userId");
+            String role = (String) session.getAttribute("role");
+
+            if (userId == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not logged in");
+            }
+
+            if ("PROFESSOR".equals(role)) {
+                return studentService.getStudentsForProfessorUserId(userId);
+            }
+
+            if ("STUDENT".equals(role)) {
+                return List.of(studentService.getStudentByUserId(userId));
+            }
+
+            return studentService.getAllStudents(); // ADMIN
         }
 
         @GetMapping("/{id}")

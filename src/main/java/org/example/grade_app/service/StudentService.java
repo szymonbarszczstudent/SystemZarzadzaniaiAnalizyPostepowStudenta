@@ -43,4 +43,11 @@ public class StudentService {
                 .map(DtoMapper::toStudentDto)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
     }
+    @Transactional(readOnly = true)
+    public List<StudentDto> getStudentsForProfessorUserId(Integer userId) {
+        return StudentRepository.findStudentsForProfessor(userId)
+                .stream()
+                .map(DtoMapper::toStudentDto)
+                .toList();
+    }
 }

@@ -53,4 +53,11 @@ public class SubjectService {
         return SubjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
     }
+    @Transactional(readOnly = true)
+    public List<SubjectDto> getSubjectsForProfessorUserId(Integer userId) {
+        return SubjectRepository.findSubjectsForProfessor(userId)
+                .stream()
+                .map(DtoMapper::toSubjectDto)
+                .toList();
+    }
 }

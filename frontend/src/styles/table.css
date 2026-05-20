@@ -41,3 +41,38 @@
 .custom-table tbody tr:nth-child(even) {
     background-color: #fafafa;
 }
+.form-container {
+    margin-bottom: 24px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    display: grid;
+    gap: 12px;
+    max-width: 600px;
+}
+
+.form-container h2 {
+    margin: 0 0 8px;
+}
+
+.form-container input,
+.form-container select {
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.form-container button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #1f2937;
+    color: white;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background: #111827;
+}

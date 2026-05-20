@@ -9,7 +9,9 @@ import org.example.grade_app.service.ExamService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/exams")
 @RequiredArgsConstructor
@@ -22,11 +24,19 @@ public class ExamController {
         Integer userId = (Integer) session.getAttribute("userId");
         String role = (String) session.getAttribute("role");
 
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not logged in");
+        }
+
         if ("STUDENT".equals(role)) {
             return ExamService.getExamsForStudentUserId(userId);
         }
 
-        return ExamService.getAllExams();
+        if ("PROFESSOR".equals(role)) {
+            return ExamService.getExamsForProfessorUserId(userId);
+        }
+
+        return ExamService.getAllExams(); // ADMIN
     }
 
     @GetMapping("/{id}")

@@ -66,6 +66,13 @@ public class ExamService {
         return ExamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Exam not found"));
     }
+    @Transactional(readOnly = true)
+    public List<ExamDto> getExamsForProfessorUserId(Integer userId) {
+        return ExamRepository.findByProfessor_Id(userId)
+                .stream()
+                .map(DtoMapper::toExamDto)
+                .toList();
+    }
 
     @Transactional(readOnly = true)
     public List<ExamDto> getExamsForStudentUserId(Integer userId) {
@@ -74,4 +81,5 @@ public class ExamService {
                 .map(DtoMapper::toExamDto)
                 .toList();
     }
+
 }

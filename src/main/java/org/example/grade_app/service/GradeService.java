@@ -38,11 +38,11 @@ public class GradeService {
     }
 
     @Transactional
-    public GradeDto createGrade(CreateGradeRequest request) {
+    public GradeDto createGrade(CreateGradeRequest request, Integer professorUserId) {
         Enrollment enrollment = EnrollmentRepository.findById(request.enrollmentId())
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        Professor professor = ProfessorRepository.findById(request.professorId())
+        Professor professor = ProfessorRepository.findById(professorUserId)
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Grade grade = new Grade();
@@ -54,10 +54,8 @@ public class GradeService {
         grade.setComment(request.comment());
         grade.setGradedAt(request.gradedAt());
 
-        Grade saved = GradeRepository.save(grade);
-        return DtoMapper.toGradeDto(saved);
+        return DtoMapper.toGradeDto(GradeRepository.save(grade));
     }
-
     public List<Grade> getAllGradesAdmin() {
         return GradeRepository.findAll();
     }
@@ -70,6 +68,13 @@ public class GradeService {
     @Transactional(readOnly = true)
     public List<GradeDto> getGradesForStudentUserId(Integer userId) {
         return GradeRepository.findByEnrollment_Student_Users_Id(userId)
+                .stream()
+                .map(DtoMapper::toGradeDto)
+                .toList();
+    }
+    @Transactional(readOnly = true)
+    public List<GradeDto> getGradesForProfessorUserId(Integer userId) {
+        return GradeRepository.findByProfessor_Id(userId)
                 .stream()
                 .map(DtoMapper::toGradeDto)
                 .toList();

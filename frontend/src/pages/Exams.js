@@ -8,15 +8,21 @@ function Exams() {
 
     const [form, setForm] = useState({
         enrollmentId: "",
-        professorId: "",
         attemptNumber: "1",
         examDate: "",
-        status: "ZAPLANOWANY",
+        status: "PASSED",
         gradeValue: "",
         comment: ""
     });
 
     const isProfessor = currentUser?.role === "PROFESSOR";
+
+    const statusLabels = {
+        PASSED: "Zaliczony",
+        FAILED: "Niezaliczony",
+        ABSENT: "Nieobecny",
+        CANCELLED: "Anulowany"
+    };
 
     const loadExams = () => {
         fetch("http://localhost:8080/api/exams", {
@@ -31,7 +37,8 @@ function Exams() {
                 } else {
                     setExams([]);
                 }
-            });
+            })
+            .catch(() => setExams([]));
     };
 
     useEffect(() => {
@@ -54,7 +61,6 @@ function Exams() {
 
         const payload = {
             enrollmentId: Number(form.enrollmentId),
-            professorId: Number(form.professorId),
             attemptNumber: Number(form.attemptNumber),
             examDate: form.examDate,
             status: form.status,
@@ -72,16 +78,15 @@ function Exams() {
         });
 
         if (!res.ok) {
-            alert("Nie udało się dodać egzaminu. Sprawdź, czy jesteś profesorem.");
+            alert("Nie udało się dodać egzaminu. Sprawdź dane formularza.");
             return;
         }
 
         setForm({
             enrollmentId: "",
-            professorId: "",
             attemptNumber: "1",
             examDate: "",
-            status: "ZAPLANOWANY",
+            status: "PASSED",
             gradeValue: "",
             comment: ""
         });
@@ -107,15 +112,6 @@ function Exams() {
                     />
 
                     <input
-                        name="professorId"
-                        type="number"
-                        placeholder="ID profesora"
-                        value={form.professorId}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <input
                         name="attemptNumber"
                         type="number"
                         min="1"
@@ -133,14 +129,11 @@ function Exams() {
                         required
                     />
 
-                    <select
-                        name="status"
-                        value={form.status}
-                        onChange={handleChange}
-                    >
-                        <option value="ZAPLANOWANY">ZAPLANOWANY</option>
-                        <option value="ZDANY">ZDANY</option>
-                        <option value="NIEZDANY">NIEZDANY</option>
+                    <select name="status" value={form.status} onChange={handleChange}>
+                        <option value="PASSED">Zaliczony</option>
+                        <option value="FAILED">Niezaliczony</option>
+                        <option value="ABSENT">Nieobecny</option>
+                        <option value="CANCELLED">Anulowany</option>
                     </select>
 
                     <input
@@ -166,22 +159,28 @@ function Exams() {
             <table className="custom-table">
                 <thead>
                 <tr>
+                    <th>Student</th>
+                    <th>Przedmiot</th>
                     <th>Profesor</th>
                     <th>Podejście</th>
                     <th>Data</th>
                     <th>Status</th>
                     <th>Ocena</th>
+                    <th>Komentarz</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {exams.map(e => (
-                    <tr key={`${e.examDate}-${e.attemptNumber}-${e.studentName}`}>
-                        <td>{e.professorLastName}</td>
-                        <td>{e.attemptNumber}</td>
-                        <td>{e.examDate}</td>
-                        <td>{e.status}</td>
-                        <td>{e.gradeValue}</td>
+                {exams.map((exam, index) => (
+                    <tr key={exam.id ?? `${exam.examDate}-${exam.attemptNumber}-${index}`}>
+                        <td>{exam.studentNumber ?? "-"}</td>
+                        <td>{exam.subjectName ?? "-"}</td>
+                        <td>{exam.professorLastName ?? "-"}</td>
+                        <td>{exam.attemptNumber ?? "-"}</td>
+                        <td>{exam.examDate ?? "-"}</td>
+                        <td>{statusLabels[exam.status] ?? exam.status ?? "-"}</td>
+                        <td>{exam.gradeValue ?? "-"}</td>
+                        <td>{exam.comment ?? "-"}</td>
                     </tr>
                 ))}
                 </tbody>

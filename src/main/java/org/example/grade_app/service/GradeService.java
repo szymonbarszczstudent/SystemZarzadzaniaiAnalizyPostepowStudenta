@@ -12,7 +12,9 @@ import org.example.grade_app.repository.GradeRepository;
 import org.example.grade_app.repository.ProfessorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -52,17 +54,21 @@ public class GradeService {
         grade.setGradeValue(request.gradeValue());
         grade.setWeight(request.weight());
         grade.setComment(request.comment());
-        grade.setGradedAt(request.gradedAt());
-
-        return DtoMapper.toGradeDto(GradeRepository.save(grade));
-    }
-    public List<Grade> getAllGradesAdmin() {
-        return GradeRepository.findAll();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        grade.setGradedAt(LocalDateTime.now().format(formatter));
+        Grade saved = GradeRepository.save(grade);
+        return DtoMapper.toGradeDto(saved);
     }
 
-    public Grade getGradeByIdAdmin(Integer id) {
-        return GradeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Grade not found"));
+    @Transactional(readOnly = true)
+    public List<GradeDto> getGradesForProfessorUserId(Integer userId) {
+        System.out.println("Grades for professor " + userId + ": " +
+                GradeRepository.findByProfessor_Id(userId).size());
+        return GradeRepository.findByProfessor_Id(userId)
+                .stream()
+                .map(DtoMapper::toGradeDto)
+                .toList();
+
     }
 
     @Transactional(readOnly = true)
@@ -72,11 +78,12 @@ public class GradeService {
                 .map(DtoMapper::toGradeDto)
                 .toList();
     }
-    @Transactional(readOnly = true)
-    public List<GradeDto> getGradesForProfessorUserId(Integer userId) {
-        return GradeRepository.findByProfessor_Id(userId)
-                .stream()
-                .map(DtoMapper::toGradeDto)
-                .toList();
+    public List<Grade> getAllGradesAdmin() {
+        return GradeRepository.findAll();
+    }
+
+    public Grade getGradeByIdAdmin(Integer id) {
+        return GradeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Grade not found"));
     }
 }

@@ -45,8 +45,19 @@ public class ExamController {
     }
 
     @PostMapping
-    public ExamDto createExam(@RequestBody CreateExamRequest request) {
-        return ExamService.createExam(request);
+    public ExamDto createExam(@RequestBody CreateExamRequest request, HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        String role = (String) session.getAttribute("role");
+
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not logged in");
+        }
+
+        if (!"PROFESSOR".equals(role)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only professor can add exams");
+        }
+
+        return ExamService.createExam(request, userId);
     }
 }
 

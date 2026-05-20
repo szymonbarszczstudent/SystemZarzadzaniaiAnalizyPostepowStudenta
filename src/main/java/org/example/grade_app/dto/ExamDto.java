@@ -1,7 +1,6 @@
 package org.example.grade_app.dto;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 public record ExamDto(
         String studentNumber,
@@ -13,5 +12,5 @@ public record ExamDto(
         String status,
         BigDecimal gradeValue,
         String comment,
-        Instant recordedAt
+        String recordedAt
 ) {}

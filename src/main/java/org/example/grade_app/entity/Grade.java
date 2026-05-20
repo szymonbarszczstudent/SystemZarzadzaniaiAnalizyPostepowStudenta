@@ -46,6 +46,6 @@ public class Grade {
     private String comment;
 
     @ColumnDefault("current_timestamp()")
-    @Column(name = "graded_at", nullable = false)
-    private Instant gradedAt;
+    @Column(name = "graded_at")
+    private String gradedAt;
 }

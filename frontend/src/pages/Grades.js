@@ -5,53 +5,19 @@ import "../styles/table.css";
 function Grades() {
     const [grades, setGrades] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
-    const [enrollments, setEnrollments] = useState([]);
-    const [professors, setProfessors] = useState([]);
 
-    useEffect(() => {
-        getCurrentUser()
-            .then(user => {
-                setCurrentUser(user);
-
-                if (user?.role === "PROFESSOR") {
-                    setForm(prev => ({
-                        ...prev,
-                        professorId: user.userId
-                    }));
-                }
-            })
-            .catch(() => setCurrentUser(null));
-
-        loadGrades();
-
-        fetch("http://localhost:8080/api/enrollments", {
-            credentials: "include"
-        })
-            .then(res => res.json())
-            .then(data => setEnrollments(Array.isArray(data) ? data : []));
-
-        fetch("http://localhost:8080/api/professors", {
-            credentials: "include"
-        })
-            .then(res => res.json())
-            .then(data => setProfessors(Array.isArray(data) ? data : []));
-    }, []);
     const [form, setForm] = useState({
         enrollmentId: "",
-        professorId: "",
         category: "",
         gradeValue: "",
         weight: "1",
-        comment: "",
-        gradedAt: ""
+        comment: ""
     });
 
     const isProfessor = currentUser?.role === "PROFESSOR";
 
     const loadGrades = () => {
-        fetch("http://localhost:8080/api/grades", {
-            credentials: "include"
-        })
+        fetch("http://localhost:8080/api/grades", { credentials: "include" })
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -61,7 +27,8 @@ function Grades() {
                 } else {
                     setGrades([]);
                 }
-            });
+            })
+            .catch(() => setGrades([]));
     };
 
     useEffect(() => {
@@ -72,50 +39,39 @@ function Grades() {
         loadGrades();
     }, []);
 
-    const handleChange = (e) => {
-        setForm(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
+    const handleChange = e => {
+        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
 
         const payload = {
             enrollmentId: Number(form.enrollmentId),
-            professorId: Number(form.professorId),
             category: form.category,
             gradeValue: Number(form.gradeValue),
             weight: Number(form.weight),
-            comment: form.comment,
-            gradedAt: form.gradedAt
-                ? new Date(form.gradedAt).toISOString()
-                : new Date().toISOString()
+            comment: form.comment
         };
 
         const res = await fetch("http://localhost:8080/api/grades", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify(payload)
         });
 
         if (!res.ok) {
-            alert("Nie udało się dodać oceny. Sprawdź, czy jesteś profesorem.");
+            alert("Nie udało się dodać oceny. Sprawdź dane formularza.");
             return;
         }
 
         setForm({
             enrollmentId: "",
-            professorId: "",
             category: "",
             gradeValue: "",
             weight: "1",
-            comment: "",
-            gradedAt: ""
+            comment: ""
         });
 
         loadGrades();
@@ -129,24 +85,18 @@ function Grades() {
                 <form onSubmit={handleSubmit} className="form-container">
                     <h2>Dodaj ocenę</h2>
 
-                    <select
+                    <input
                         name="enrollmentId"
+                        type="number"
+                        placeholder="ID zapisu studenta na przedmiot"
                         value={form.enrollmentId}
                         onChange={handleChange}
                         required
-                    >
-                        <option value="">Wybierz studenta i przedmiot</option>
-
-                        {enrollments.map(e => (
-                            <option key={e.id} value={e.id}>
-                                {e.studentFirstName} {e.studentLastName} ({e.studentNumber}) — {e.subjectName}
-                            </option>
-                        ))}
-                    </select>
+                    />
 
                     <input
                         name="category"
-                        placeholder="Kategoria, np. kolokwium"
+                        placeholder="Kategoria, np. Kolokwium 1"
                         value={form.category}
                         onChange={handleChange}
                         required
@@ -155,7 +105,9 @@ function Grades() {
                     <input
                         name="gradeValue"
                         type="number"
-                        step="0.01"
+                        step="0.5"
+                        min="2"
+                        max="5"
                         placeholder="Ocena"
                         value={form.gradeValue}
                         onChange={handleChange}
@@ -165,7 +117,8 @@ function Grades() {
                     <input
                         name="weight"
                         type="number"
-                        step="0.01"
+                        step="0.1"
+                        min="0.1"
                         placeholder="Waga"
                         value={form.weight}
                         onChange={handleChange}
@@ -179,13 +132,6 @@ function Grades() {
                         onChange={handleChange}
                     />
 
-                    <input
-                        name="gradedAt"
-                        type="datetime-local"
-                        value={form.gradedAt}
-                        onChange={handleChange}
-                    />
-
                     <button type="submit">Dodaj ocenę</button>
                 </form>
             )}
@@ -193,6 +139,8 @@ function Grades() {
             <table className="custom-table">
                 <thead>
                 <tr>
+                    <th>Student</th>
+                    <th>Przedmiot</th>
                     <th>Profesor</th>
                     <th>Kategoria</th>
                     <th>Ocena</th>
@@ -203,14 +151,16 @@ function Grades() {
                 </thead>
 
                 <tbody>
-                {grades.map(g => (
-                    <tr key={`${g.studentNumber}-${g.subjectCode}-${g.gradedAt}`}>
-                        <td>{g.professorLastName}</td>
-                        <td>{g.category}</td>
-                        <td>{g.gradeValue}</td>
-                        <td>{g.weight}</td>
-                        <td>{g.comment}</td>
-                        <td>{g.gradedAt}</td>
+                {grades.map((grade, index) => (
+                    <tr key={index}>
+                        <td>{grade.studentNumber ?? "-"}</td>
+                        <td>{grade.subjectName ?? "-"}</td>
+                        <td>{grade.professorLastName ?? "-"}</td>
+                        <td>{grade.category ?? "-"}</td>
+                        <td>{grade.gradeValue ?? "-"}</td>
+                        <td>{grade.weight ?? "-"}</td>
+                        <td>{grade.comment ?? "-"}</td>
+                        <td>{grade.gradedAt ?? "-"}</td>
                     </tr>
                 ))}
                 </tbody>

@@ -12,5 +12,5 @@ public record GradeDto(
         BigDecimal gradeValue,
         BigDecimal weight,
         String comment,
-        Instant gradedAt
+        String gradedAt
 ) {}

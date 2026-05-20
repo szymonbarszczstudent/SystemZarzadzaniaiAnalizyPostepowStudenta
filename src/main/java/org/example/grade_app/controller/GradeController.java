@@ -4,19 +4,19 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.grade_app.dto.CreateGradeRequest;
 import org.example.grade_app.dto.GradeDto;
-import org.example.grade_app.entity.Grade;
 import org.example.grade_app.service.GradeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+
 @RestController
 @RequestMapping("/api/grades")
 @RequiredArgsConstructor
 public class GradeController {
 
-    private final GradeService GradeService;
+    private final GradeService gradeService;
 
     @GetMapping
     public List<GradeDto> getAllGrades(HttpSession session) {
@@ -28,19 +28,19 @@ public class GradeController {
         }
 
         if ("STUDENT".equals(role)) {
-            return GradeService.getGradesForStudentUserId(userId);
+            return gradeService.getGradesForStudentUserId(userId);
         }
 
         if ("PROFESSOR".equals(role)) {
-            return GradeService.getGradesForProfessorUserId(userId);
+            return gradeService.getGradesForProfessorUserId(userId);
         }
 
-        return GradeService.getAllGrades(); // ADMIN
+        return gradeService.getAllGrades(); // ADMIN
     }
 
     @GetMapping("/{id}")
     public GradeDto getGradeById(@PathVariable Integer id) {
-        return GradeService.getGradeById(id);
+        return gradeService.getGradeById(id);
     }
 
     @PostMapping
@@ -52,11 +52,11 @@ public class GradeController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not logged in");
         }
 
-        if (!"PROFESSOR".equals(role) && !"ADMIN".equals(role)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only professor or admin can create grades");
+        if (!"PROFESSOR".equals(role)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only professor can add grades");
         }
-
-        return GradeService.createGrade(request, userId);
+        System.out.println("GET /api/grades userId=" + userId + ", role=" + role);
+        return gradeService.createGrade(request, userId);
     }
-}
 
+}

@@ -13,6 +13,11 @@ import org.example.grade_app.repository.ProfessorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,11 +43,11 @@ public class ExamService {
     }
 
     @Transactional
-    public ExamDto createExam(CreateExamRequest request) {
+    public ExamDto createExam(CreateExamRequest request, Integer professorUserId) {
         Enrollment enrollment = EnrollmentRepository.findById(request.enrollmentId())
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        Professor professor = ProfessorRepository.findById(request.professorId())
+        Professor professor = ProfessorRepository.findById(professorUserId)
                 .orElseThrow(() -> new RuntimeException("Professor not found"));
 
         Exam exam = new Exam();
@@ -50,9 +55,18 @@ public class ExamService {
         exam.setProfessor(professor);
         exam.setAttemptNumber(request.attemptNumber());
         exam.setExamDate(request.examDate());
-        exam.setStatus(request.status());
+        String status = request.status().toUpperCase();
+
+        if (!List.of("PASSED", "FAILED", "ABSENT", "CANCELLED").contains(status)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid status: " + request.status());
+        }
+
+        exam.setStatus(status);
         exam.setGradeValue(request.gradeValue());
         exam.setComment(request.comment());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        exam.setRecordedAt(LocalDateTime.now().format(formatter));
 
         Exam saved = ExamRepository.save(exam);
         return DtoMapper.toExamDto(saved);

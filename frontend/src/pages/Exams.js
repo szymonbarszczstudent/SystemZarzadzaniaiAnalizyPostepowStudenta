@@ -7,7 +7,7 @@ function Exams() {
     const [currentUser, setCurrentUser] = useState(null);
 
     const [form, setForm] = useState({
-        enrollmentId: "",
+        studentNumber: "",
         attemptNumber: "1",
         examDate: "",
         status: "PASSED",
@@ -60,7 +60,7 @@ function Exams() {
         e.preventDefault();
 
         const payload = {
-            enrollmentId: Number(form.enrollmentId),
+            studentNumber: form.studentNumber,
             attemptNumber: Number(form.attemptNumber),
             examDate: form.examDate,
             status: form.status,
@@ -83,7 +83,7 @@ function Exams() {
         }
 
         setForm({
-            enrollmentId: "",
+            studentNumber: "",
             attemptNumber: "1",
             examDate: "",
             status: "PASSED",
@@ -103,10 +103,9 @@ function Exams() {
                     <h2>Dodaj egzamin</h2>
 
                     <input
-                        name="enrollmentId"
-                        type="number"
-                        placeholder="ID zapisu studenta na przedmiot"
-                        value={form.enrollmentId}
+                        name="studentNumber"
+                        placeholder="Nr studenta"
+                        value={form.studentNumber}
                         onChange={handleChange}
                         required
                     />

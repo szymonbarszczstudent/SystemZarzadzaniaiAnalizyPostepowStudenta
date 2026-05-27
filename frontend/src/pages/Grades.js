@@ -7,7 +7,7 @@ function Grades() {
     const [currentUser, setCurrentUser] = useState(null);
 
     const [form, setForm] = useState({
-        enrollmentId: "",
+        studentNumber: "",
         category: "",
         gradeValue: "",
         weight: "1",
@@ -47,7 +47,7 @@ function Grades() {
         e.preventDefault();
 
         const payload = {
-            enrollmentId: Number(form.enrollmentId),
+            studentNumber: form.studentNumber,
             category: form.category,
             gradeValue: Number(form.gradeValue),
             weight: Number(form.weight),
@@ -67,7 +67,7 @@ function Grades() {
         }
 
         setForm({
-            enrollmentId: "",
+            studentNumber: "",
             category: "",
             gradeValue: "",
             weight: "1",
@@ -86,10 +86,9 @@ function Grades() {
                     <h2>Dodaj ocenę</h2>
 
                     <input
-                        name="enrollmentId"
-                        type="number"
-                        placeholder="ID zapisu studenta na przedmiot"
-                        value={form.enrollmentId}
+                        name="studentNumber"
+                        placeholder="Nr studenta"
+                        value={form.studentNumber}
                         onChange={handleChange}
                         required
                     />

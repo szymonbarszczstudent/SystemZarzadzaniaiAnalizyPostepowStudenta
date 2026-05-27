@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpSession;
 import org.example.grade_app.dto.AuthUserResponse;
 import org.example.grade_app.dto.LoginRequest;
 import org.example.grade_app.dto.RegisterRequest;
+import org.example.grade_app.entity.Professor;
 import org.example.grade_app.entity.Student;
 import org.example.grade_app.entity.User;
+import org.example.grade_app.repository.ProfessorRepository;
 import org.example.grade_app.repository.StudentRepository;
 import org.example.grade_app.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -19,21 +21,23 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
+    private final ProfessorRepository professorRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AuthService(
             UserRepository userRepository,
             StudentRepository studentRepository,
+            ProfessorRepository professorRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
+        this.professorRepository = professorRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public void register(RegisterRequest request) {
-
         if (request.email() == null || request.email().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is required");
         }
@@ -59,9 +63,7 @@ public class AuthService {
 
         Student student = new Student();
         student.setUsers(savedUser);
-
         student.setStudentNumber("S" + String.format("%05d", savedUser.getId()));
-
         student.setFirstName("Nowy");
         student.setLastName("Student");
         student.setStudyYear((byte) 1);
@@ -84,37 +86,76 @@ public class AuthService {
             );
         }
 
+        AuthUserResponse response = buildAuthUserResponse(user);
+
         session.setAttribute("userId", user.getId());
         session.setAttribute("email", user.getEmail());
         session.setAttribute("role", user.getRole());
+        session.setAttribute("firstName", response.firstName());
+        session.setAttribute("lastName", response.lastName());
 
-        return new AuthUserResponse(
-                true,
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+        return response;
     }
 
     public AuthUserResponse me(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
 
         if (userId == null) {
-            return new AuthUserResponse(false, null, null, null);
+            return new AuthUserResponse(false, null, null, null, null, null);
         }
 
         return new AuthUserResponse(
                 true,
                 userId,
                 (String) session.getAttribute("email"),
-                (String) session.getAttribute("role")
+                (String) session.getAttribute("role"),
+                (String) session.getAttribute("firstName"),
+                (String) session.getAttribute("lastName")
         );
     }
 
     public void logout(HttpSession session) {
         session.invalidate();
     }
+
     public String hashPassword(String password) {
         return passwordEncoder.encode(password);
+    }
+
+    private AuthUserResponse buildAuthUserResponse(User user) {
+        String firstName = null;
+        String lastName = null;
+
+        if ("STUDENT".equals(user.getRole())) {
+            Student student = studentRepository.findByUsers_Id(user.getId()).orElse(null);
+
+            if (student != null) {
+                firstName = student.getFirstName();
+                lastName = student.getLastName();
+            }
+        }
+
+        if ("PROFESSOR".equals(user.getRole())) {
+            Professor professor = professorRepository.findByUsers_Id(user.getId()).orElse(null);
+
+            if (professor != null) {
+                firstName = professor.getFirstName();
+                lastName = professor.getLastName();
+            }
+        }
+
+        if ("ADMIN".equals(user.getRole())) {
+            firstName = "Administrator";
+            lastName = "";
+        }
+
+        return new AuthUserResponse(
+                true,
+                user.getId(),
+                user.getEmail(),
+                user.getRole(),
+                firstName,
+                lastName
+        );
     }
 }

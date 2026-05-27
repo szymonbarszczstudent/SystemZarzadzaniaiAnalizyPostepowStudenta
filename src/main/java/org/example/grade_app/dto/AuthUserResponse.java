@@ -4,5 +4,7 @@ public record AuthUserResponse(
         boolean loggedIn,
         Integer userId,
         String email,
-        String role
+        String role,
+        String firstName,
+        String lastName
 ) {}

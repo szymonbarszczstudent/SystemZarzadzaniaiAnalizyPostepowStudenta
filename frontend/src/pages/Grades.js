@@ -5,15 +5,28 @@ import "../styles/table.css";
 function Grades() {
     const [grades, setGrades] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
-
+    const [enrollments, setEnrollments] = useState([]);
     const [form, setForm] = useState({
-        studentNumber: "",
+        enrollmentId: "",
         category: "",
         gradeValue: "",
         weight: "1",
         comment: ""
     });
-
+    const loadEnrollments = () => {
+        fetch("http://localhost:8080/api/enrollments/options", {
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setEnrollments(data);
+                } else {
+                    setEnrollments([]);
+                }
+            })
+            .catch(() => setEnrollments([]));
+    };
     const isProfessor = currentUser?.role === "PROFESSOR";
 
     const loadGrades = () => {
@@ -33,7 +46,13 @@ function Grades() {
 
     useEffect(() => {
         getCurrentUser()
-            .then(setCurrentUser)
+            .then(user => {
+                setCurrentUser(user);
+
+                if (user?.role === "PROFESSOR") {
+                    loadEnrollments();
+                }
+            })
             .catch(() => setCurrentUser(null));
 
         loadGrades();
@@ -47,7 +66,7 @@ function Grades() {
         e.preventDefault();
 
         const payload = {
-            studentNumber: form.studentNumber,
+            enrollmentId: Number(form.enrollmentId),
             category: form.category,
             gradeValue: Number(form.gradeValue),
             weight: Number(form.weight),
@@ -67,7 +86,7 @@ function Grades() {
         }
 
         setForm({
-            studentNumber: "",
+            enrollmentId: "",
             category: "",
             gradeValue: "",
             weight: "1",
@@ -85,13 +104,23 @@ function Grades() {
                 <form onSubmit={handleSubmit} className="form-container">
                     <h2>Dodaj ocenę</h2>
 
-                    <input
-                        name="studentNumber"
-                        placeholder="Nr studenta"
-                        value={form.studentNumber}
+                    <select
+                        name="enrollmentId"
+                        value={form.enrollmentId}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">Wybierz studenta</option>
+
+                        {enrollments.map(enrollment => (
+                            <option
+                                key={enrollment.enrollmentId}
+                                value={enrollment.enrollmentId}
+                            >
+                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.subjectName}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         name="category"

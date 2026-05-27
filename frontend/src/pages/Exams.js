@@ -5,16 +5,29 @@ import "../styles/table.css";
 function Exams() {
     const [exams, setExams] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
-
+    const [enrollments, setEnrollments] = useState([]);
     const [form, setForm] = useState({
-        studentNumber: "",
+        enrollmentId: "",
         attemptNumber: "1",
         examDate: "",
         status: "PASSED",
         gradeValue: "",
         comment: ""
     });
-
+    const loadEnrollments = () => {
+        fetch("http://localhost:8080/api/enrollments/options", {
+            credentials: "include"
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setEnrollments(data);
+                } else {
+                    setEnrollments([]);
+                }
+            })
+            .catch(() => setEnrollments([]));
+    };
     const isProfessor = currentUser?.role === "PROFESSOR";
 
     const statusLabels = {
@@ -43,7 +56,13 @@ function Exams() {
 
     useEffect(() => {
         getCurrentUser()
-            .then(setCurrentUser)
+            .then(user => {
+                setCurrentUser(user);
+
+                if (user?.role === "PROFESSOR") {
+                    loadEnrollments();
+                }
+            })
             .catch(() => setCurrentUser(null));
 
         loadExams();
@@ -60,7 +79,7 @@ function Exams() {
         e.preventDefault();
 
         const payload = {
-            studentNumber: form.studentNumber,
+            enrollmentId: Number(form.enrollmentId),
             attemptNumber: Number(form.attemptNumber),
             examDate: form.examDate,
             status: form.status,
@@ -83,7 +102,7 @@ function Exams() {
         }
 
         setForm({
-            studentNumber: "",
+            enrollmentId: "",
             attemptNumber: "1",
             examDate: "",
             status: "PASSED",
@@ -102,18 +121,29 @@ function Exams() {
                 <form onSubmit={handleSubmit} className="form-container">
                     <h2>Dodaj egzamin</h2>
 
-                    <input
-                        name="studentNumber"
-                        placeholder="Nr studenta"
-                        value={form.studentNumber}
+                    <select
+                        name="enrollmentId"
+                        value={form.enrollmentId}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">Wybierz studenta</option>
+
+                        {enrollments.map(enrollment => (
+                            <option
+                                key={enrollment.enrollmentId}
+                                value={enrollment.enrollmentId}
+                            >
+                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.subjectName}
+                            </option>
+                        ))}
+                    </select>
 
                     <input
                         name="attemptNumber"
                         type="number"
                         min="1"
+                        max="3"
                         placeholder="Podejście"
                         value={form.attemptNumber}
                         onChange={handleChange}
@@ -138,7 +168,9 @@ function Exams() {
                     <input
                         name="gradeValue"
                         type="number"
-                        step="0.01"
+                        min="2.0"
+                        max="5.0"
+                        step="0.5"
                         placeholder="Ocena"
                         value={form.gradeValue}
                         onChange={handleChange}

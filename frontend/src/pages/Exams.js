@@ -8,7 +8,7 @@ function Exams() {
     const [enrollments, setEnrollments] = useState([]);
     const [form, setForm] = useState({
         enrollmentId: "",
-        attemptNumber: "1",
+        attemptNumber: "",
         examDate: "",
         status: "PASSED",
         gradeValue: "",
@@ -103,7 +103,7 @@ function Exams() {
 
         setForm({
             enrollmentId: "",
-            attemptNumber: "1",
+            attemptNumber: "",
             examDate: "",
             status: "PASSED",
             gradeValue: "",
@@ -134,7 +134,7 @@ function Exams() {
                                 key={enrollment.enrollmentId}
                                 value={enrollment.enrollmentId}
                             >
-                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.subjectName}
+                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.programName}
                             </option>
                         ))}
                     </select>

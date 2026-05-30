@@ -28,17 +28,6 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectDto> getSubjectsForStudentUserId(Integer userId) {
-        return EnrollmentRepository.findByStudent_Users_Id(userId)
-                .stream()
-                .map(enrollment -> enrollment.getSubject())
-                .distinct()
-                .sorted(Comparator.comparing(Subject::getName))
-                .map(DtoMapper::toSubjectDto)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
     public SubjectDto getSubjectById(Integer id) {
         return SubjectRepository.findById(id)
                 .map(DtoMapper::toSubjectDto)
@@ -53,6 +42,14 @@ public class SubjectService {
         return SubjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subject not found"));
     }
+    @Transactional(readOnly = true)
+    public List<SubjectDto> getSubjectsForStudentUserId(Integer userId) {
+        return SubjectRepository.findSubjectsForStudentUserId(userId)
+                .stream()
+                .map(DtoMapper::toSubjectDto)
+                .toList();
+    }
+
     @Transactional(readOnly = true)
     public List<SubjectDto> getSubjectsForProfessorUserId(Integer userId) {
         return SubjectRepository.findSubjectsForProfessor(userId)

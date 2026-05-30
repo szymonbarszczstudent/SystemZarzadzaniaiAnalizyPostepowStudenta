@@ -24,7 +24,8 @@ public class EnrollmentService {
                         e.getStudent().getFirstName(),
                         e.getStudent().getLastName(),
                         e.getSubject().getCode(),
-                        e.getSubject().getName()
+                        e.getSubject().getName(),
+                        e.getStudent().getProgramName()
                 ))
                 .toList();
     }

@@ -12,7 +12,7 @@ export default function Login() {
         try {
             await login(email, password);
             alert("Zalogowano!");
-                window.location.href = "/students";
+            window.location.href = "/students";
 
         } catch {
             alert("Błąd logowania");

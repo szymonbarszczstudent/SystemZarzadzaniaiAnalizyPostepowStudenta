@@ -6,5 +6,6 @@ public record EnrollmentOptionDto(
         String firstName,
         String lastName,
         String subjectCode,
-        String subjectName
+        String subjectName,
+        String programName
 ) {}

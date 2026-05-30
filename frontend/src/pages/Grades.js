@@ -31,6 +31,7 @@ function Grades() {
 
     const loadGrades = () => {
         fetch("http://localhost:8080/api/grades", { credentials: "include" })
+
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -117,7 +118,7 @@ function Grades() {
                                 key={enrollment.enrollmentId}
                                 value={enrollment.enrollmentId}
                             >
-                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.subjectName}
+                                {enrollment.studentNumber} - {enrollment.firstName} {enrollment.lastName} - {enrollment.programName}
                             </option>
                         ))}
                     </select>
